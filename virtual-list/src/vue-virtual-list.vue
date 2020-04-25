@@ -93,7 +93,7 @@ export default {
       const scrollTop = target.scrollTop;
       const isCanLoad = this.total > this.list.length;
       const isLoad = this.virtual.scroll(scrollTop, isCanLoad);
-      isCanLoad && isLoad && this.load();
+      isLoad && this.load();
     }, 100),
     load() {
       this.$emit('load');
