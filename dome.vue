@@ -1,9 +1,23 @@
 <template>
   <div class="screen-model">
-    <virtual-list>
+    <virtual-list
+      :list="list"
+      :size="66"
+      :total="total"
+      @load="loadData"
+    >
       <template v-slot:header>
         <div class="header">
-          <span v-for="item in 4" :key="item">{{item}}</span>
+          <span
+            v-for="item in 4"
+            :key="item"
+          >{{item}}</span>
+        </div>
+      </template>
+      <template v-slot:default="row">
+        <div class="row-box">
+          <h3>{{ row.row.todo }}</h3>
+          <p>{{ row.row.desc }}</p>
         </div>
       </template>
       <template v-slot:footer>
@@ -14,21 +28,69 @@
 </template>
 
 <script>
-import VirtualList from './vue-virtual-list';
+import VirtualList from './virtual-list';
 
 export default {
   name: 'dome',
   components: {
     'virtual-list': VirtualList
+  },
+  data() {
+    return {
+      list: [],
+      size: 15,
+      page: 1,
+      total: 1000
+    }
+  },
+  created() {
+    this.loadData();
+  },
+  methods: {
+    loadData() {
+      setTimeout(() => {
+        const result = this.generateData();
+        this.list.push(...result);
+      }, 100);
+    },
+    generateData() {
+      const todos = ['吃饭', '睡觉', '聊天', '学习'];
+      const list = [];
+      for (let i = 0; i < 20; i++) {
+        const id = `${(this.page - 1) * 15 + i}`.padStart(5, 'a');
+        list.push({
+          id,
+          todo: todos[Math.floor(Math.random() * 3)],
+          desc: '今天又是很充实的一天啊！'
+        });
+      }
+      this.page++;
+      return list;
+    }
   }
 }
 </script>
 
-<style scoped>
+<style>
+html,
+body {
+  height: 100%;
+}
+
+body,
+h3,
+p {
+  margin: 0;
+}
+
 .screen-model {
-  border: 1px #333 solid;
-  width: 300px;
-  height: 500px;
+  height: 100%;
+}
+
+.row-box {
+  padding: 10px;
+  height: 46px;
+  background-color: #f9f9f9;
 }
 
 .header {
